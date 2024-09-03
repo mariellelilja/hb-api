@@ -35,42 +35,68 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+console.log('Loaded API key:', process.env.GIPHY_API_KEY);
 var TheService = /** @class */ (function () {
-    function TheService(apiKey) {
-        this.apiKey = apiKey;
-        this.baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+    function TheService() {
+        this.apiKey = process.env.GIPHY_API_KEY;
+        console.log('API Key:', this.apiKey);
+        this.baseUrl = 'https://api.giphy.com/v1/gifs/random?';
     }
     TheService.prototype.fetchData = function (inputQuery) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, data;
+            var response, data, gifUrl, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch("".concat(this.baseUrl, "?q=").concat(inputQuery, "&appid=").concat(this.apiKey, "&units=metric"))];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetch("https://api.giphy.com/v1/gifs/random?api_key=".concat(this.apiKey, "&tag=").concat(inputQuery))];
                     case 1:
                         response = _a.sent();
                         return [4 /*yield*/, response.json()];
                     case 2:
                         data = _a.sent();
-                        return [2 /*return*/, data];
+                        gifUrl = data.data.images.original.url;
+                        //return data;
+                        return [2 /*return*/, gifUrl];
+                    case 3:
+                        error_1 = _a.sent();
+                        console.error('Error fetching the GIF:', error_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     return TheService;
 }());
-var theService = new TheService('apikey todo');
+//export default TheService;
+var theService = new TheService();
 document.getElementById('searchButton').addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var inputQuery, data, outputDiv;
+    var inputQuery, gifUrl, outputDiv, img;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log('FUNKA FÖRIHELVETE');
                 inputQuery = document.getElementById('inputQuery').value;
                 return [4 /*yield*/, theService.fetchData(inputQuery)];
             case 1:
-                data = _a.sent();
+                gifUrl = _a.sent();
                 outputDiv = document.getElementById('outputDiv');
-                if (outputDiv) {
-                    outputDiv.innerText = "Temperature: ".concat(data.main.temp, "\u00B0C\n        Weather: ").concat(data.weather[0].description);
+                if (outputDiv && gifUrl) {
+                    outputDiv.innerHTML = '';
+                    img = document.createElement('img');
+                    console.log('gifUrl: ' + gifUrl);
+                    img.src = gifUrl;
+                    img.alt = "GIF showing ".concat(inputQuery);
+                    img.style.maxWidth = '100%';
+                    outputDiv.appendChild(img);
+                    outputDiv.style.opacity = '1';
                 }
                 return [2 /*return*/];
         }
