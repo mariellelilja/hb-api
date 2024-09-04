@@ -1,4 +1,6 @@
 "use strict";
+//import dotenv from 'dotenv';
+//dotenv.config();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,13 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-console.log('Loaded API key:', process.env.GIPHY_API_KEY);
 var TheService = /** @class */ (function () {
     function TheService() {
         this.apiKey = process.env.GIPHY_API_KEY;
@@ -55,9 +50,12 @@ var TheService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch("https://api.giphy.com/v1/gifs/random?api_key=".concat(this.apiKey, "&tag=").concat(inputQuery))];
+                        return [4 /*yield*/, fetch("".concat(this.baseUrl, "api_key=").concat(this.apiKey, "&tag=").concat(inputQuery))];
                     case 1:
                         response = _a.sent();
+                        if (!response.ok) {
+                            throw new Error('Network response not ok.');
+                        }
                         return [4 /*yield*/, response.json()];
                     case 2:
                         data = _a.sent();
@@ -67,7 +65,7 @@ var TheService = /** @class */ (function () {
                     case 3:
                         error_1 = _a.sent();
                         console.error('Error fetching the GIF:', error_1);
-                        return [3 /*break*/, 4];
+                        return [2 /*return*/, 'Error fetching GIF'];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -78,25 +76,32 @@ var TheService = /** @class */ (function () {
 //export default TheService;
 var theService = new TheService();
 document.getElementById('searchButton').addEventListener('click', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var inputQuery, gifUrl, outputDiv, img;
+    var inputQuery, gifUrl, outputDiv, img_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('FUNKA FÖRIHELVETE');
                 inputQuery = document.getElementById('inputQuery').value;
                 return [4 /*yield*/, theService.fetchData(inputQuery)];
             case 1:
                 gifUrl = _a.sent();
                 outputDiv = document.getElementById('outputDiv');
-                if (outputDiv && gifUrl) {
+                if (outputDiv && gifUrl === 'Error fetching GIF') {
+                    outputDiv.innerHTML = '<p>Sorry, something went wrong. Please try again later.</p>';
+                }
+                else if (outputDiv && gifUrl) {
                     outputDiv.innerHTML = '';
-                    img = document.createElement('img');
+                    img_1 = document.createElement('img');
                     console.log('gifUrl: ' + gifUrl);
-                    img.src = gifUrl;
-                    img.alt = "GIF showing ".concat(inputQuery);
-                    img.style.maxWidth = '100%';
-                    outputDiv.appendChild(img);
-                    outputDiv.style.opacity = '1';
+                    img_1.src = gifUrl;
+                    img_1.alt = "GIF showing ".concat(inputQuery);
+                    img_1.style.maxWidth = '100%';
+                    //const img = `<img src="${gifUrl}" alt="GIF showing ${inputQuery}" style="max-width: 100%;">`;
+                    outputDiv.appendChild(img_1);
+                    //    outputDiv.style.opacity = '0';
+                    //    outputDiv.style.opacity = '1';
+                    img_1.onload = function () {
+                        img_1.classList.add('loaded');
+                    };
                 }
                 return [2 /*return*/];
         }
