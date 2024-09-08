@@ -36,4 +36,7 @@ Datastrukturen som returneras då svaret är OK är i JSON-format. Från JSON-ob
 \section{Implementering}
 Jag valde att göra ett frontendprojekt för att snabbt få upp en hemsida och anropa deras API direkt i koden. Det gick snabbt att få upp en lokal hemsida med en randomiserad hämtning. På så sätt har de gjort API-användningen simpel, och dokumentationen var lättillgänglig även den. Jag gör anropet med hjälp av den asynkrona metoden och objektet Response, båda native till javascript. Till mitt anrop sätter jag URL:en som parameter till fetch-metoden, och till URL:en sätter jag inputqueryn som query parameter. Det är en relativt simpel och bra uppsättning, där svaret på anropet inväntas innan programmet går vidare. I de fall repsonse inte returnerat status 'ok' så kommer ett Error kastas programmatiskt och fångas. Just nu är hanteringen att skriva ut svarets statusmeddelande i konsollen, men en vidareutveckling är en ordentlig hantering där användren får ett felmeddelande med feedback om vad som gick fel och eventuell loggning. 
 
+\section{Repository}
+Repositoryn till kodprojektet finns att tillgå på \href{https://github.com/mariellelilja/hb-api}{GitHub}.
+
 \end{document}
