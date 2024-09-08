@@ -15,13 +15,25 @@
 \tableofcontents
 
 \section{Introduktion}
+I detta projekt har ett söknings-API använts från hemsidan developers.giphy.com. På hemsidan finns olika API:er att tillgå. Jag valde en randomiserad bild utifrån en sökquery. Därför byggde jag ett inputfält och en knapp som gjorde ett GET-request. Ofta kan man förstå varför sökordet gav den givna träffen, men ibland verkar det som att det är random taggar som associerat sökresultatet med söktexten. Bilden ges i form av ett URL som jag därefter visar upp i mitt sökresultatsområde.
+
 
 \section{Beskrivning av valt API}
+Giphy är en plattform för GIFs, och liksom många tjänster så har de en sida dedikerad för utvecklare, där man som registrerad användare får tillgång till dokumentation av API:et, samt möjlighet att generera API-nycklar gratis, men med vissa begränsningar. De erbjuder även nycklar som ger mer åtkomst för en summa, exempelvis så att man kan göra fler än 100 anrop per dag, vilket är praktiskt om man utvecklar i större skala. Att registrera sig går snabbt och man kan direkt skapa flera nycklar, även utan att betala.
 
-\section{API-nyckel och åtkomst}
+Några av de  endpoints som erbjuds är bland annat random-endpointen med sökningsparameter en som tar emot en sökquery och hittar en GIF med den taggen, och med Trending-endpointen får man upp de GIF:s som trendar just nu. Jag valde den förstnämnde då jag gärna ville arbeta med att skicka med en sökparameter. Den tar både engelska och svenska ord, liksom ett tiotal andra språk.
+
+Vid rendering kan man justera den till mindre trafikrkävande, vilket skulle kunna förbättra performance vid de tillfällen det spelar mindre roll. Det finns även andra parametrar man kan lägga till för att justera sitt anrop.
+
+\section{API-nyckel}
+API:et var väldigt lättillgängligt och krävde inte mycket mer än att signa upp via Giphys utvecklarsida, skapa en ny nyckel och använda den i sin lösning. Jag valde att göra en asynkron metod, vilket är särskilt användbart vid hämtning av stor data och filer. De rekommenderar att använda SDK i produktion för att underlätta integrationen. Vid en sådan uppgradering får man dessutom fler förmåner än vad som erbjuds vid gratisversionen. Informationen man skulle ange vid skapandet av ens nyckel var ett projektnamn, eventuellt beskrivning samt ändamålsplattform. Här kunde man välja mellan iOS, Android, Web eller annat. Det fanns även en gräns på 100 anrop per timme. Vid debugging gick det väldigt fort att konsumera, om man kan lita på beräkningarna, och i alla fall om man ska lite på felmeddelandet efter ett tag om att max antal förfrågningar har överskridits.
+
+Jag försökte av säkerhetsskäl gömma undan nyckeln i en icke-versionshanterad lokal fil med på grund av den enkla arkitekturen med få tredjepartsfunktionalitet så var det lite besvärligt.
 
 \section{Datastruktur}
+Datastrukturen som returneras då svaret är OK är i JSON-format. Från JSON-objektet når vi sedan ett URL till sökträffsbilden (genom att navigera i strukturen från 'data.data.images.original' och därifrån till 'url'), och denna sätts därefter i som sourcevärde i ett img-element som monteras i resultat-diven. Detta visar bilden, och jag lade till en animering för att göra visningen lite mjukare för ögat när bildsresultatet blir synligt.  
 
-\section{Åtkomst i kod}
+\section{Implementering}
+Jag valde att göra ett frontendprojekt för att snabbt få upp en hemsida och anropa deras API direkt i koden. Det gick snabbt att få upp en lokal hemsida med en randomiserad hämtning. På så sätt har de gjort API-användningen simpel, och dokumentationen var lättillgänglig även den. Jag gör anropet med hjälp av den asynkrona metoden och objektet Response, båda native till javascript. Till mitt anrop sätter jag URL:en som parameter till fetch-metoden, och till URL:en sätter jag inputqueryn som query parameter. Det är en relativt simpel och bra uppsättning, där svaret på anropet inväntas innan programmet går vidare. I de fall repsonse inte returnerat status 'ok' så kommer ett Error kastas programmatiskt och fångas. Just nu är hanteringen att skriva ut svarets statusmeddelande i konsollen, men en vidareutveckling är en ordentlig hantering där användren får ett felmeddelande med feedback om vad som gick fel och eventuell loggning. 
 
 \end{document}
